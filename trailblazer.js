@@ -34,27 +34,19 @@
         },
 
         handleRoute: function(routeData) {
-            var router = this,
-                handler = routeData.handler;
+            var handler = routeData.handler;
 
             if (_.isString(handler)) {
                 if (_.isFunction(this[handler])) {
                     this[handler].apply(this, routeData);
                 }
-            } else if (handler instanceof BaseRoute) {
-                this._handleBaseRoute(handler, routeData);
-            } else if (this._handlerIsView(handler)) {
-                handler = new ViewRoute({ viewClass: handler });
+            } else if (handler instanceof Backbone.Trailblazer.Route) {
                 this._handleBaseRoute(handler, routeData);
             } else if (_.isFunction(handler)) {
                 handler.apply(this, routeData);
             } else {
-                throw new Error("Incorrectly configured route");
+                throw new Error('Incorrectly configured route');
             }
-        },
-
-        _handlerIsView: function(handler) {
-            return handler && _.isFunction(handler) && handler.prototype.hasOwnProperty('template');
         },
 
         _handleBaseRoute: function(handler, routeData) {

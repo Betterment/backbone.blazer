@@ -1,0 +1,26 @@
+{
+    "undef": true,
+    "unused": "vars",
+    "curly": true,
+    "newcap": true,
+    "browser": true,
+    "jquery": true,
+    "eqeqeq": true,
+    "latedef": "nofunc",
+    "immed": true,
+    "expr": true,
+    "sub": true,
+    "laxcomma": true,
+    "laxbreak": true,
+    "supernew": true,
+    "shadow": true,
+    "proto": true,
+    "quotmark": "single",
+    "-W065": true,
+    "globals": {
+        "define"    : true,
+        "require"   : true,
+        "module"    : true,
+        "exports"   : true
+    }
+}
