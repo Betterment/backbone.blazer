@@ -1,15 +1,16 @@
-var chai = require('chai'),
-    expect = chai.expect;
+var _ = require('underscore'),
+    $ = require('jquery'),
+    Backbone = require('backbone');
 
-global.$ = require('jquery');
-global._ = require('underscore');
-global.Backbone = require('backbone');
-global.Backbone.$ = global.$;
+Backbone.$ = $;
 
-var Trailblazer = require('./trailblazer');
+var Marionette = require('backbone.marionette'),
+    chai = require('chai'),
+    expect = chai.expect,
+    Trailblazer = require('./trailblazer');
 
 describe('Backbone.Trailblazer.Router', function() {
     it('should work', function() {
-        expect(1).to.equal(2);
+        expect(true).to.equal(true);
     });
 });

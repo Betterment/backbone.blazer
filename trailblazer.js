@@ -2,33 +2,20 @@
     // https://github.com/umdjs/umd/blob/master/returnExports.js
     if (typeof exports === 'object') {
         // Node
-        module.exports = factory(require('jquery'), require('underscore'), require('backbone'));
+        module.exports = factory(require('jquery'), require('underscore'), require('backbone'), require('backbone.marionette'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'backbone'], factory);
+        define(['jquery', 'underscore', 'backbone', 'backbone.marionette'], factory);
     } else {
         // Browser globals (root is window)
         factory(root.$, root._, root.Backbone, root.Backbone.Marionette, root);
     }
-})(this, function ($, _, Backbone, root) {
+})(this, function ($, _, Backbone, Marionette, root) {
     'use strict';
 
     Backbone.Trailblazer = {};
 
-    Backbone.Trailblazer.Route = function(options) {
-        this.options = _.extend({}, _.result(this, 'options'), options);
-        this.initialize.apply(this, arguments);
-    };
-
-    Backbone.Trailblazer.Route.extend = Backbone.extend;
-
-    // make Routes quack like marionette objects, shhh!
-    _.extend(Backbone.Trailblazer.Route.prototype, Backbone.Events, {
-        initialize: function() {},
-        destroy: function() {
-            this.stopListening();
-        },
-    });
+    Backbone.Trailblazer.Route = Backbone.Marionette.Object.extend({});
 
     Backbone.Trailblazer.Router = Backbone.Router.extend({
         route: function(route, config) {
