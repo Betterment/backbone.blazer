@@ -1,0 +1,29 @@
+{
+  "name": "trailblazer",
+  "main": "trailblazer.js",
+  "version": "0.0.1",
+  "authors": [
+    "Sam Moore <sam@betterment.com>"
+  ],
+  "description": "a more powerful router for Backbone and Marionette",
+  "keywords": [
+    "backbone",
+    "marionette",
+    "router",
+    "route",
+    "routing"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "underscore": "~1.7.0",
+    "backbone": "~1.1.2"
+  }
+}
