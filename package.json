@@ -1,0 +1,32 @@
+{
+  "name": "trailblazer",
+  "version": "0.0.1",
+  "description": "a more powerful router for Backbone and Marionette",
+  "main": "trailblazer.js",
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "backbone.marionette": "~2.3.2",
+    "underscore": "~1.7.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Betterment/trailblazer"
+  },
+  "keywords": [
+    "backbone",
+    "marionette",
+    "router",
+    "route",
+    "routing"
+  ],
+  "author": "Sam Moore <sam@betterment.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Betterment/trailblazer/issues"
+  },
+  "homepage": "https://github.com/Betterment/trailblazer"
+}
