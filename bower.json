@@ -1,6 +1,6 @@
 {
-  "name": "trailblazer",
-  "main": "trailblazer.js",
+  "name": "backbone.blazer",
+  "main": "backbone.blazer.js",
   "version": "0.0.1",
   "authors": [
     "Sam Moore <sam@betterment.com>"

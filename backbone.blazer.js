@@ -13,11 +13,11 @@
 })(this, function ($, _, Backbone, Marionette, root) {
     'use strict';
 
-    Backbone.Trailblazer = {};
+    Backbone.Blazer = {};
 
-    Backbone.Trailblazer.Route = Backbone.Marionette.Object.extend({});
+    Backbone.Blazer.Route = Backbone.Marionette.Object.extend({});
 
-    Backbone.Trailblazer.Router = Backbone.Router.extend({
+    Backbone.Blazer.Router = Backbone.Router.extend({
         route: function(route, config) {
             if (!_.isRegExp(route)) {
                 route = this._routeToRegExp(route);
@@ -42,7 +42,7 @@
                 if (_.isFunction(this[handler])) {
                     this[handler].apply(this, routeData);
                 }
-            } else if (handler instanceof Backbone.Trailblazer.Route) {
+            } else if (handler instanceof Backbone.Blazer.Route) {
                 this._handleBaseRoute(handler, routeData);
             } else if (_.isFunction(handler)) {
                 handler.apply(this, routeData);
@@ -79,5 +79,5 @@
         }
     });
 
-    return Backbone.Trailblazer;
+    return Backbone.Blazer;
 });

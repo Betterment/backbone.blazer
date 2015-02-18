@@ -7,9 +7,9 @@ Backbone.$ = $;
 var Marionette = require('backbone.marionette'),
     chai = require('chai'),
     expect = chai.expect,
-    Trailblazer = require('./trailblazer');
+    Blazer = require('./backbone.blazer');
 
-describe('Backbone.Trailblazer.Router', function() {
+describe('Backbone.Blazer.Router', function() {
     it('should work', function() {
         expect(true).to.equal(true);
     });

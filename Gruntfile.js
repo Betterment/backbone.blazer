@@ -7,7 +7,7 @@ module.exports = function(grunt) {
                 options: {
                     jshintrc: '.jshintrc'
                 },
-                src: ['trailblazer.js']
+                src: ['backbone.blazer.js']
             }
         },
 
@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                     clearRequireCache: true,
                     reporter: 'spec'
                 },
-                src: ['trailblazer.spec.js']
+                src: ['backbone.blazer.spec.js']
             }
         }
     });
