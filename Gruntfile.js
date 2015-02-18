@@ -9,8 +9,18 @@ module.exports = function(grunt) {
                 },
                 src: ['trailblazer.js']
             }
+        },
+
+        mochaTest: {
+            test: {
+                options: {
+                    clearRequireCache: true,
+                    reporter: 'spec'
+                },
+                src: ['trailblazer.spec.js']
+            }
         }
     });
 
-    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', ['jshint', 'mochaTest']);
 };
