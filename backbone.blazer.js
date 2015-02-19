@@ -40,7 +40,7 @@
 
             if (_.isString(handler)) {
                 if (_.isFunction(this[handler])) {
-                    this[handler].apply(this, routeData);
+                    this[handler].apply(this, routeData.params);
                 }
             } else if (handler instanceof Backbone.Blazer.Route) {
                 this._handleBaseRoute(handler, routeData);
@@ -60,7 +60,7 @@
                 handler.prepare(routeData).then(function() {
                     // TODO: make sure that everything is kosher
                     // are we still on the originally requested route?
-                    handler.render(routeData);
+                    handler.execute(routeData);
                 }).fail(function() {
                     var args = Array.prototype.slice.call(arguments);
 
@@ -72,7 +72,7 @@
                     }
                 });
             } else {
-                handler.render(routeData);
+                handler.execute(routeData);
             }
 
             handler.trigger('after:render');
