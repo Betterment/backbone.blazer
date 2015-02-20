@@ -54,7 +54,7 @@
         _handleBaseRoute: function(handler, routeData) {
             var router = this;
 
-            handler.trigger('before:render');
+            handler.trigger('before:execute');
 
             if (_.isFunction(handler.prepare)) {
                 handler.prepare(routeData).then(function() {
@@ -75,7 +75,7 @@
                 handler.execute(routeData);
             }
 
-            handler.trigger('after:render');
+            handler.trigger('after:execute');
         }
     });
 
