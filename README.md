@@ -39,7 +39,7 @@ var HotRoute = Backbone.Blazer.Route.extend({
 });
 ```
 
-In addition to using `Route` objects to do normal view rendering, `Route` objects can also be configured to perform asynchronous actions **before** rendering your views (or really before calling your `execute` method).
+`Route` objects can do more than just view rendering. `Route` objects can also be configured to perform asynchronous actions **before** rendering your views (or really before calling your `execute` method).
 
 For example, here's a route that loads some data from some Backbone Model before rendering a view:
 
@@ -63,6 +63,12 @@ The Blazer router expects the `prepare` method to return a promise. If the promi
 ### events
  - `error`, with payload `[routeData, argsFromRejectedPromise]`
 
+The router accepts the same parameters as the normal [`Backbone.Router`](http://backbonejs.org/#Router).
+
+The entries in the `routes` hash can contain any of the following:
+- a callback function in the form: `function(routeData) {}`
+- a router method in the form: `function(routeData) {}`
+- a `Backbone.Blazer.Route` object
 
 ## `Backbone.Blazer.Route`
 ### events
@@ -81,6 +87,7 @@ The Blazer router expects the `prepare` method to return a promise. If the promi
 
 TODO
  - consider replacing events that exist now with `Backbone.Radio` / `Backbone.Wreqr` request/response style pattern to make them more useful.
+ - decide if the error method on `Route` objects should be called given ALL types of errors that could arise when processing a route. i.e. should they be called when there is a view error? undefined method error? etc. is it a try/catch kind of thing?
 
 --
 
