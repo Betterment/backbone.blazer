@@ -62,13 +62,13 @@
             route.trigger('before:execute');
 
             route.prepare(routeData).then(function() {
-                if (this.currentRoute !== route) {
+                if (router.currentRoute !== route) {
                     return;
                 }
                 route.execute(routeData);
                 route.trigger('after:execute');
             }).fail(function() {
-                if (this.currentRoute !== route) {
+                if (router.currentRoute !== route) {
                     return;
                 }
                 if (_.isFunction(route.error)) {
