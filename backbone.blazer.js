@@ -61,6 +61,7 @@
                     // TODO: make sure that everything is kosher
                     // are we still on the originally requested route?
                     handler.execute(routeData);
+                    handler.trigger('after:execute');
                 }).fail(function() {
                     var args = Array.prototype.slice.call(arguments);
 
@@ -73,9 +74,8 @@
                 });
             } else {
                 handler.execute(routeData);
+                handler.trigger('after:execute');
             }
-
-            handler.trigger('after:execute');
         }
     });
 
