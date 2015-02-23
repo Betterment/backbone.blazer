@@ -41,6 +41,8 @@
         handleRoute: function(routeData) {
             var handler = routeData.handler;
 
+            this.currentRoute = handler;
+
             if (_.isString(handler)) {
                 if (_.isFunction(this[handler])) {
                     this[handler].apply(this, routeData.params);
@@ -56,8 +58,6 @@
 
         _handleBlazerRoute: function(route, routeData) {
             var router = this;
-
-            this.currentRoute = route;
 
             route.trigger('before:execute', routeData);
 
