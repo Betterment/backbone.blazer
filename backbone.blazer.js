@@ -16,7 +16,7 @@
     Backbone.Blazer = {};
 
     Backbone.Blazer.Route = Backbone.Marionette.Object.extend({
-        prepare: function() { return new $.Deferred().resolve(); },
+        prepare: function() { return $.Deferred().resolve(); },
         execute: function() { }
     });
 
