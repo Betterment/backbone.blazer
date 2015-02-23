@@ -63,6 +63,7 @@ The Blazer router expects the `prepare` method to return a promise. If the promi
 ### events
  - `error`, with payload `[routeData, argsFromRejectedPromise]`
 
+
 ## `Backbone.Blazer.Route`
 ### events
  - `before:execute`, with payload `[routeData]`. this is the first thing that happens when processing a route.
