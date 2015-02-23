@@ -59,14 +59,14 @@
 
             this.currentRoute = route;
 
-            route.trigger('before:execute');
+            route.trigger('before:execute', routeData);
 
             route.prepare(routeData).then(function() {
                 if (router.currentRoute !== route) {
                     return;
                 }
                 route.execute(routeData);
-                route.trigger('after:execute');
+                route.trigger('after:execute', routeData);
             }).fail(function() {
                 var args = Array.prototype.slice.call(arguments);
                 args = args.unshift(routeData);
