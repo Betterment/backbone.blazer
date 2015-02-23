@@ -56,4 +56,4 @@ var LoadSomeDataRoute = Backbone.Blazer.Route.extend({
 ```
 
 # Legal Schtuff (MIT License)
-Any contributions made to this project are covered under the MIT Licence.
+Any contributions made to this project are covered under the MIT License, found [here](LICENSE)
