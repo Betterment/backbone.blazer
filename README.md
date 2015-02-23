@@ -24,7 +24,7 @@ var MyRouter = Backbone.Blazer.Router.extend({
 });
 ```
 
-In addition to the **old** way of routing, Blazer provides a new strategy.
+In addition to the **old** way of routing, Blazer provides a new strategy: using a `Route` object.
 ```js
 var MyRouter = Backbone.Blazer.Router.extend({
   routes: {
@@ -39,7 +39,7 @@ var HotRoute = Backbone.Blazer.Route.extend({
 });
 ```
 
-Now, that's not all that interesting really. What is interesting is that Blazer Route objects can be configured to perform asynchronous actions **before** rendering your views (or really before calling your `execute` method).
+In addition to using `Route` objects to do normal view rendering, `Route` objects can also be configured to perform asynchronous actions **before** rendering your views (or really before calling your `execute` method).
 
 For example, here's a route that loads some data from some Backbone Model before rendering a view:
 
@@ -54,6 +54,34 @@ var LoadSomeDataRoute = Backbone.Blazer.Route.extend({
   }
 });
 ```
+
+The Blazer router expects the `prepare` method to return a promise. If the promise is resolved as a success, then the `execute` method is called; otherwise, the route's `error` method is called (if provided).
+
+# API
+
+## `Backbone.Blazer.Router`
+### events
+ - `error`, with payload `[routeData, argsFromRejectedPromise]`
+
+## `Backbone.Blazer.Route`
+### events
+ - `before:execute`, with payload `[routeData]`. this is the first thing that happens when processing a route.
+ - `after:execute`, with payload `[routeData]`. this is the last thing called when processing a route. **only** called if execute was actually called.
+ 
+### `#prepare(routeData)`
+ - returns a promise (default value is a successfully resolved promise)
+
+### `#execute(routeData)`
+ - called if the promise from `#prepare` resolves to success
+
+### `#error(routeData, argumentsFromRejectedPromise)`
+ - called if the promise from `#prepare` resolves to failure
+ - returning false will prevent the router from bubbling the error back up through itself to the application.
+
+TODO
+ - consider replacing events that exist now with `Backbone.Radio` / `Backbone.Wreqr` request/response style pattern to make them more useful.
+
+--
 
 # Legal Schtuff (MIT License)
 Any contributions made to this project are covered under the MIT License, found [here](LICENSE)
