@@ -15,7 +15,10 @@
 
     Backbone.Blazer = {};
 
-    Backbone.Blazer.Route = Backbone.Marionette.Object.extend({});
+    Backbone.Blazer.Route = Backbone.Marionette.Object.extend({
+        prepare: function() { return new $.Deferred().resolve(); }
+        execute: function() { }
+    });
 
     Backbone.Blazer.Router = Backbone.Router.extend({
         route: function(route, config) {
@@ -56,26 +59,19 @@
 
             handler.trigger('before:execute');
 
-            if (_.isFunction(handler.prepare)) {
-                handler.prepare(routeData).then(function() {
-                    // TODO: make sure that everything is kosher
-                    // are we still on the originally requested route?
-                    handler.execute(routeData);
-                    handler.trigger('after:execute');
-                }).fail(function() {
-                    var args = Array.prototype.slice.call(arguments);
-
-                    if (_.isFunction(handler.error)) {
-                        var errorHandled = handler.error.apply(handler, args) === false;
-                        if (!errorHandled) {
-                            router.trigger('error', args);
-                        }
-                    }
-                });
-            } else {
+            handler.prepare(routeData).then(function() {
+                // TODO: make sure that everything is kosher
+                // are we still on the originally requested route?
                 handler.execute(routeData);
                 handler.trigger('after:execute');
-            }
+            }).fail(function() {
+                if (_.isFunction(handler.error)) {
+                    var errorHandled = handler.error.apply(handler, arguments) === false;
+                    if (!errorHandled) {
+                        router.trigger('error', args);
+                    }
+                }
+            });
         }
     });
 
