@@ -46,7 +46,7 @@
                     this[handler].apply(this, routeData.params);
                 }
             } else if (handler instanceof Backbone.Blazer.Route) {
-                this._handleBaseRoute(handler, routeData);
+                this._handleBlazerRoute(handler, routeData);
             } else if (_.isFunction(handler)) {
                 handler.apply(this, routeData);
             } else {
@@ -54,19 +54,25 @@
             }
         },
 
-        _handleBaseRoute: function(handler, routeData) {
+        _handleBlazerRoute: function(route, routeData) {
             var router = this;
 
-            handler.trigger('before:execute');
+            this.currentRoute = route;
 
-            handler.prepare(routeData).then(function() {
-                // TODO: make sure that everything is kosher
-                // are we still on the originally requested route?
-                handler.execute(routeData);
-                handler.trigger('after:execute');
+            route.trigger('before:execute');
+
+            route.prepare(routeData).then(function() {
+                if (this.currentRoute !== route) {
+                    return;
+                }
+                route.execute(routeData);
+                route.trigger('after:execute');
             }).fail(function() {
-                if (_.isFunction(handler.error)) {
-                    var errorHandled = handler.error.apply(handler, arguments) === false;
+                if (this.currentRoute !== route) {
+                    return;
+                }
+                if (_.isFunction(route.error)) {
+                    var errorHandled = route.error.apply(route, arguments) === false;
                     if (!errorHandled) {
                         router.trigger('error', args);
                     }
