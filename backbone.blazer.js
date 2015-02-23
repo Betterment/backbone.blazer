@@ -16,7 +16,7 @@
     Backbone.Blazer = {};
 
     Backbone.Blazer.Route = Backbone.Marionette.Object.extend({
-        prepare: function() { return new $.Deferred().resolve(); }
+        prepare: function() { return new $.Deferred().resolve(); },
         execute: function() { }
     });
 
@@ -74,7 +74,7 @@
                 if (_.isFunction(route.error)) {
                     var errorHandled = route.error.apply(route, arguments) === false;
                     if (!errorHandled) {
-                        router.trigger('error', args);
+                        router.trigger('error', arguments);
                     }
                 }
             });
