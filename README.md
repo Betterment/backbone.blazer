@@ -85,10 +85,6 @@ The entries in the `routes` hash can contain any of the following:
  - called if the promise from `#prepare` resolves to failure
  - returning false will prevent the router from bubbling the error back up through itself to the application.
 
-TODO
- - consider replacing events that exist now with `Backbone.Radio` / `Backbone.Wreqr` request/response style pattern to make them more useful.
- - decide if the error method on `Route` objects should be called given ALL types of errors that could arise when processing a route. i.e. should they be called when there is a view error? undefined method error? etc. is it a try/catch kind of thing?
-
 --
 
 # Legal Schtuff (MIT License)
