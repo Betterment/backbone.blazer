@@ -12,7 +12,7 @@ var _ = require('underscore'),
 Backbone.$ = $;
 
 var Marionette = require('backbone.marionette'),
-    Blazer = require('./backbone.blazer');
+    Blazer = require('../backbone.blazer');
 
 var Location = function(href) {
     this.replace(href);
