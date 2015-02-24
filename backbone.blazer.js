@@ -2,22 +2,34 @@
     // https://github.com/umdjs/umd/blob/master/returnExports.js
     if (typeof exports === 'object') {
         // Node
-        module.exports = factory(require('jquery'), require('underscore'), require('backbone'), require('backbone.marionette'));
+        module.exports = factory(require('jquery'), require('underscore'), require('backbone'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'backbone', 'backbone.marionette'], factory);
+        define(['jquery', 'underscore', 'backbone'], factory);
     } else {
         // Browser globals (root is window)
-        factory(root.$, root._, root.Backbone, root.Backbone.Marionette, root);
+        factory(root.$, root._, root.Backbone, root);
     }
-})(this, function ($, _, Backbone, Marionette, root) {
+})(this, function ($, _, Backbone, root) {
     'use strict';
 
     Backbone.Blazer = {};
 
-    Backbone.Blazer.Route = Backbone.Marionette.Object.extend({
+    Backbone.Blazer.Route = function(options) {
+        this.options = _.extend({}, _.result(this, 'options'), options);
+        this.initialize.apply(this, arguments);
+    };
+
+    Backbone.Blazer.Route.extend = Backbone.Model.extend;
+
+    _.extend(Backbone.Blazer.Route.prototype, Backbone.Events, {
+        initialize: function() {},
+        destroy: function() {
+            this.stopListening();
+            return this;
+        },
         prepare: function() { return $.Deferred().resolve(); },
-        execute: function() { }
+        execute: function() {}
     });
 
     Backbone.Blazer.Router = Backbone.Router.extend({
