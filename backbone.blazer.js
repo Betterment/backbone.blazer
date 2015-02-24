@@ -5,7 +5,7 @@
         module.exports = factory(require('jquery'), require('underscore'), require('backbone'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'backbone', factory);
+        define(['jquery', 'underscore', 'backbone'], factory);
     } else {
         // Browser globals (root is window)
         factory(root.$, root._, root.Backbone, root);
@@ -18,7 +18,7 @@
     Backbone.Blazer.Route = function(options) {
         this.options = _.extend({}, _.result(this, 'options'), options);
         this.initialize.apply(this, arguments);
-    }
+    };
 
     Backbone.Blazer.Route.extend = Backbone.Model.extend;
 
