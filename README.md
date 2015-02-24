@@ -1,6 +1,8 @@
 # backbone.blazer
 A better router for Backbone and Marionette applications
 
+learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7iRr0jmspmSr97gyIO3PH2k/edit?usp=sharing) (presentation)
+
 ## huh? what's this?
 In order to build a modularized routing system, we've extended and overriden a few parts of the core `Backbone.Router`. This library attempts to be a **mostly** drop-in replacement for the normal Backbone router. However, we have removed a few things.
 
