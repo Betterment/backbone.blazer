@@ -14,13 +14,10 @@ learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7i
 
 `bower install backbone.blazer`
 
-include in your scripts just after `backbone.base-router`.
-
 ```html
 <script src='jquery.js'></script>
 <script src='underscore.js'></script>
 <script src='backbone.js'></script>
-<script src='bower/path/to/backbone.base-router.js'></script>
 <script src='bower/path/to/backbone.blazer.js'></script>
 <script src='app.js'></script>
 ```
@@ -35,6 +32,7 @@ We've removed the triggering of events on the router when processing a route. Th
 #### added
 `Backbone.Blazer.Router` still supports the usual way of routing in a Backbone application: mapping a regexp to a callback. However, we've gone ahead and added a new way of configuring your routes: `Backbone.Blazer.Route`.
 
+#### NOTE: this library builds on top of [Backbone.BaseRouter](https://github.com/jmeas/backbone.base-router). We internalize the dependency, so that library comes bundled inside of Backbone.Blazer. This keeps the configuration simpler for you.
 
 # Router Configuration
 Blazer's router supports all the familiar configuration of `Backbone.Router`

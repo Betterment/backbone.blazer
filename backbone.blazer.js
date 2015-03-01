@@ -1,3 +1,7 @@
+// ========================== Backbone.BaseRoute start ==========================
+// @include node_modules/backbone.base-router/src/backbone.base-router.js
+// =========================== Backbone.BaseRoute end ===========================
+
 Backbone.Blazer = {};
 
 Backbone.Blazer.Route = function(options) {
