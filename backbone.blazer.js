@@ -28,7 +28,7 @@
             this.stopListening();
             return this;
         },
-        prepare: function() { return $.Deferred().resolve().promise(); },
+        prepare: function() {},
         execute: function() {},
         error: function() {}
     });
@@ -74,7 +74,7 @@
 
             route.trigger('before:execute', routeData);
 
-            route.prepare(routeData).then(function() {
+            $.when(route.prepare(routeData)).then(function() {
                 if (router.currentRoute !== route) {
                     return;
                 }
@@ -86,11 +86,9 @@
                 if (router.currentRoute !== route) {
                     return;
                 }
-                if (_.isFunction(route.error)) {
-                    var errorHandled = route.error.apply(route, args) === false;
-                    if (!errorHandled) {
-                        router.trigger('error', args);
-                    }
+                var errorHandled = route.error.apply(route, args) === false;
+                if (!errorHandled) {
+                    router.trigger('error', args);
                 }
             });
         }
