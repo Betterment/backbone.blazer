@@ -15,6 +15,7 @@ describe('Backbone.Blazer.Router', function() {
         this.router.route('route', this.testRoute);
         sinon.spy(this.router, 'handleRoute');
 
+        Backbone.history.location = new Location('http://example.org');
         Backbone.history.start({ pushState: true });
     });
 
@@ -43,7 +44,6 @@ describe('Backbone.Blazer.Router', function() {
 
         this.router.navigate('route', { trigger: true });
 
-        expect(this.router.handleRoute).to.have.been.calledOnce;
         expect(this.testRoute.prepare).to.have.been.calledOnce;
         expect(this.testRoute.execute).to.not.have.been.called;
         expect(this.testRoute.error).to.have.been.calledOnce;

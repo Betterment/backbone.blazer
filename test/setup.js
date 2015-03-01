@@ -8,11 +8,10 @@ global.navigator = global.window.navigator = {
 global._ = require('underscore');
 global.$ = require('jquery');
 global.Backbone = require('backbone');
-global.Promise = require('bluebird');
 Backbone.$ = global.$;
 global.Blazer = require('../backbone.blazer');
 
-var Location = function(href) {
+global.Location = function(href) {
     this.replace(href);
 };
 _.extend(Location.prototype, {
