@@ -18,8 +18,7 @@
     "load-grunt-tasks": "^3.1.0",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.7.0",
-    "jsdom": "^3.0.0",
-    "bluebird": "^2.9.13"
+    "jsdom": "^3.0.0"
   },
   "scripts": {
     "test": "grunt"
