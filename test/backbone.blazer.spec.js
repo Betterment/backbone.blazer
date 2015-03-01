@@ -1,71 +1,18 @@
-var jsdom = require('jsdom').jsdom;
-global.document = jsdom('');
-global.window = global.document.defaultView;
-global.navigator = global.window.navigator = {
-  userAgent: 'NodeJS JSDom',
-  appVersion: ''
-};
-
-var _ = require('underscore'),
-    $ = require('jquery'),
-    Backbone = require('backbone');
-Backbone.$ = $;
-
-var Blazer = require('../backbone.blazer');
-
-var Location = function(href) {
-    this.replace(href);
-};
-_.extend(Location.prototype, {
-
-    parser: document.createElement('a'),
-
-    replace: function(href) {
-        this.parser.href = href;
-        _.extend(this, _.pick(this.parser,
-                'href',
-                'hash',
-                'host',
-                'search',
-                'fragment',
-                'pathname',
-                'protocol'
-                ));
-        // In IE, anchor.pathname does not contain a leading slash though
-        // window.location.pathname does.
-        if (!/^\//.test(this.pathname)) this.pathname = '/' + this.pathname;
-    },
-
-    toString: function() {
-        return this.href;
-    }
-
-});
-
-var chai = require('chai'),
-    expect = chai.expect,
-    sinon = require('sinon'),
-    sinonChai = require('sinon-chai');
-
-chai.use(sinonChai);
-
 describe('Backbone.Blazer.Router', function() {
+
+    var TestRoute = Backbone.Blazer.Route.extend({
+        execute: function() {}
+    });
+
+    var TestRouter = Backbone.Blazer.Router.extend();
+
     beforeEach(function() {
         this.sandbox = sinon.sandbox.create();
 
-        var TestRoute = Backbone.Blazer.Route.extend({
-            execute: function() {}
-        });
+        this.testRoute = new TestRoute();
 
-        var testRoute = this.testRoute = new TestRoute();
-        sinon.spy(this.testRoute, 'execute');
-
-        var TestRouter = Backbone.Blazer.Router.extend({
-            routes: {
-                'route': testRoute
-            }
-        });
         this.router = new TestRouter();
+        this.router.route('route', this.testRoute);
         sinon.spy(this.router, 'handleRoute');
 
         Backbone.history.start({ pushState: true });
@@ -76,8 +23,29 @@ describe('Backbone.Blazer.Router', function() {
         this.sandbox.restore();
     });
 
-    it('should work', function() {
+    it('should process a route correctly', function() {
+        sinon.spy(this.testRoute, 'prepare');
+        sinon.spy(this.testRoute, 'execute');
+        sinon.spy(this.testRoute, 'error');
+
         this.router.navigate('route', { trigger: true });
+
+        expect(this.router.handleRoute).to.have.been.calledOnce;
+        expect(this.testRoute.prepare).to.have.been.calledOnce;
         expect(this.testRoute.execute).to.have.been.calledOnce;
+        expect(this.testRoute.error).to.not.have.been.called;
+    });
+
+    it('should process an error correctly', function() {
+        sinon.stub(this.testRoute, 'prepare', function() { return $.Deferred().reject().promise(); });
+        sinon.spy(this.testRoute, 'execute');
+        sinon.spy(this.testRoute, 'error');
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.router.handleRoute).to.have.been.calledOnce;
+        expect(this.testRoute.prepare).to.have.been.calledOnce;
+        expect(this.testRoute.execute).to.not.have.been.called;
+        expect(this.testRoute.error).to.have.been.calledOnce;
     });
 });
