@@ -82,12 +82,12 @@
                 route.trigger('after:execute', routeData);
             }).fail(function() {
                 var args = Array.prototype.slice.call(arguments);
-                args = args.unshift(routeData);
+                args.unshift(routeData);
                 if (router.currentRoute !== route) {
                     return;
                 }
                 if (_.isFunction(route.error)) {
-                    var errorHandled = route.error.call(route, args) === false;
+                    var errorHandled = route.error.apply(route, args) === false;
                     if (!errorHandled) {
                         router.trigger('error', args);
                     }
