@@ -5,6 +5,7 @@
   "authors": [
     "Sam Moore <sam@betterment.com>"
   ],
+  "homepage": "https://github.com/Betterment/backbone.blazer",
   "description": "a more powerful router for Backbone and Marionette",
   "keywords": [
     "backbone",
