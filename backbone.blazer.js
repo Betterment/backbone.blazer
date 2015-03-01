@@ -28,8 +28,9 @@
             this.stopListening();
             return this;
         },
-        prepare: function() { return $.Deferred().resolve(); },
-        execute: function() {}
+        prepare: function() { return $.Deferred().resolve().promise(); },
+        execute: function() {},
+        error: function() {}
     });
 
     Backbone.Blazer.Router = Backbone.Router.extend({
