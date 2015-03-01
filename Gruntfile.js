@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                     clearRequireCache: true,
                     reporter: 'spec'
                 },
-                src: ['backbone.blazer.spec.js']
+                src: ['test/**/*.spec.js']
             }
         }
     });
