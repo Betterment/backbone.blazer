@@ -18,9 +18,13 @@
     "quotmark": "single",
     "-W065": true,
     "globals": {
-        "define"    : true,
-        "require"   : true,
-        "module"    : true,
-        "exports"   : true
+        "define": true,
+        "require": true,
+        "module": true,
+        "exports": true,
+        "$": true,
+        "jQuery": true,
+        "_": true,
+        "Backbone": true
     }
 }
