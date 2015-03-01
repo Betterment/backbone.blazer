@@ -17,7 +17,6 @@
     "proto": true,
     "quotmark": "single",
     "-W065": true,
-    "esnext": true,
     "globals": {
         "define"    : true,
         "require"   : true,
