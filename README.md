@@ -8,7 +8,11 @@ A better router for Backbone and Marionette applications
   <img src='https://badges.gitter.im/Join%20Chat.svg' alt='Gitter Chat' />
 </a>
 
-learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7iRr0jmspmSr97gyIO3PH2k/edit?usp=sharing) (presentation)
+learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7iRr0jmspmSr97gyIO3PH2k/edit?usp=sharing) (presentation) and [here](http://youtu.be/F32QhaHFn1k) (video)
+
+## installation
+
+`bower install backbone.blazer`
 
 ## huh? what's this?
 In order to build a modularized routing system, we've extended and overriden a few parts of the core `Backbone.Router`. This library attempts to be a **mostly** drop-in replacement for the normal Backbone router. However, we have removed a few things.
