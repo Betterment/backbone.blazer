@@ -14,6 +14,16 @@ learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7i
 
 `bower install backbone.blazer`
 
+include in your scripts just after `backbone.base-router`.
+```html
+<script src='jquery.js'></script>
+<script src='underscore.js'></script>
+<script src='backbone.js'></script>
+<script src='bower/path/to/backbone.base-router.js'></script>
+<script src='bower/path/to/backbone.blazer.js'></script>
+<script src='app.js'></script>
+```
+
 ## huh? what's this?
 In order to build a modularized routing system, we've extended and overriden a few parts of the core `Backbone.Router`. This library attempts to be a **mostly** drop-in replacement for the normal Backbone router. However, we have removed a few things.
 
