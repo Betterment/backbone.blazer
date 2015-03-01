@@ -14,10 +14,13 @@ learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7i
 
 `bower install backbone.blazer`
 
+include in your scripts just after `backbone.base-router`.
+
 ```html
 <script src='jquery.js'></script>
 <script src='underscore.js'></script>
 <script src='backbone.js'></script>
+<script src='bower/path/to/backbone.base-router.js'></script>
 <script src='bower/path/to/backbone.blazer.js'></script>
 <script src='app.js'></script>
 ```
@@ -95,7 +98,7 @@ The entries in the `routes` hash can contain any of the following:
 ### events
  - `before:execute`, with payload `[routeData]`. this is the first thing that happens when processing a route.
  - `after:execute`, with payload `[routeData]`. this is the last thing called when processing a route. **only** called if execute was actually called.
- 
+
 ### `#prepare(routeData)`
  - returns a promise (default value is a successfully resolved promise)
 
