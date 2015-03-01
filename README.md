@@ -14,12 +14,10 @@ learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7i
 
 `bower install backbone.blazer`
 
-include in your scripts just after `backbone.base-router`.
 ```html
 <script src='jquery.js'></script>
 <script src='underscore.js'></script>
 <script src='backbone.js'></script>
-<script src='bower/path/to/backbone.base-router.js'></script>
 <script src='bower/path/to/backbone.blazer.js'></script>
 <script src='app.js'></script>
 ```
