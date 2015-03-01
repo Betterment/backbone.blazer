@@ -10,6 +10,7 @@ global.$ = require('jquery');
 global.Backbone = require('backbone');
 Backbone.$ = global.$;
 global.Blazer = require('../backbone.blazer');
+require('es6-promise').polyfill();
 
 global.Location = function(href) {
     this.replace(href);

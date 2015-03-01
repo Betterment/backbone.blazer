@@ -20,7 +20,8 @@
     "sinon-chai": "^2.7.0",
     "jsdom": "^3.0.0",
     "grunt-preprocess": "^4.1.0",
-    "grunt-contrib-uglify": "^0.8.0"
+    "grunt-contrib-uglify": "^0.8.0",
+    "es6-promise": "^2.0.1"
   },
   "scripts": {
     "test": "grunt"

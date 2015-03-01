@@ -59,13 +59,13 @@ Backbone.Blazer.Router = Backbone.Router.extend({
 
         route.trigger('before:execute', routeData);
 
-        $.when(route.prepare(routeData)).then(function() {
+        Promise.resolve(route.prepare(routeData)).then(function() {
             if (router.currentRoute !== route) {
                 return;
             }
             route.execute(routeData);
             route.trigger('after:execute', routeData);
-        }).fail(function() {
+        }).catch(function() {
             var args = Array.prototype.slice.call(arguments);
             args.unshift(routeData);
             if (router.currentRoute !== route) {

@@ -1,7 +1,8 @@
 describe('Backbone.Blazer.Router', function() {
 
     var TestRoute = Backbone.Blazer.Route.extend({
-        execute: function() {}
+        execute: function() { console.log('execute'); },
+        error: function() { console.log('error'); }
     });
 
     var TestRouter = Backbone.Blazer.Router.extend();
@@ -38,9 +39,9 @@ describe('Backbone.Blazer.Router', function() {
     });
 
     it('should process an error correctly', function() {
-        this.sinon.stub(this.testRoute, 'prepare', function() { return $.Deferred().reject().promise(); });
+        this.sinon.stub(this.testRoute, 'prepare', function() { return Promise.reject(); });
         this.sinon.spy(this.testRoute, 'execute');
-        this.sinon.spy(this.testRoute, 'error');
+        this.sinon.stub(this.testRoute, 'error');
 
         this.router.navigate('route', { trigger: true });
 
