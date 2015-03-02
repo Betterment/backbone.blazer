@@ -67,11 +67,11 @@ For example, here's a route that loads some data from some Backbone Model before
 ```js
 var LoadSomeDataRoute = Backbone.Blazer.Route.extend({
   prepare: function(routeData) {
-    this.someData = new SomeData();
-    return this.someData.fetch();
+    routData.someData = new SomeData();
+    return routeData.someData.fetch();
   },
   execute: function(routeData) {
-    App.getRegion('main').show(new SomeDataView({ model: this.someData }));
+    App.getRegion('main').show(new SomeDataView({ model: routeData.someData }));
   }
 });
 ```
