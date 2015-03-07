@@ -48,4 +48,84 @@ describe('Backbone.Blazer.Router', function() {
         expect(this.testRoute.execute).to.not.have.been.called;
         expect(this.testRoute.error).to.have.been.calledOnce;
     });
+
+    it('should run a single before and after filter', function() {
+        this.router.filters = [{
+            beforeRoute: sinon.spy(),
+            afterRoute: sinon.spy()
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.router.filters[0].beforeRoute).to.have.been.calledOnce;
+        expect(this.router.filters[0].afterRoute).to.have.been.calledOnce;
+    });
+
+    it('should run multiple synchronous filters in order', function() {
+        var result = null;
+
+        this.router.filters = [{
+            beforeRoute: function() { result = 'first'; }
+        }, {
+            beforeRoute: function() { result = 'second'; }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(result).to.equal('second');
+    });
+
+    it('should run multiple asynchronous filters in order', function(done) {
+        var result = null;
+
+        this.router.filters = [{
+            beforeRoute: function() {
+                var def = $.Deferred();
+                setTimeout(function() { result = 'first'; def.resolve(); }, 30);
+                return def.promise();
+            }
+        }, {
+            beforeRoute: function() {
+                var def = $.Deferred();
+                setTimeout(function() { result = 'second'; def.resolve(); }, 10);
+                return def.promise();
+            }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        this.testRoute.on('after:execute', function() {
+            expect(result).to.equal('second');
+            done();
+        });
+    });
+
+    it('should run a mix of synchronous and asynchronous filters in order', function(done) {
+        var result = null;
+
+        this.router.filters = [{
+            beforeRoute: function() {
+                var def = $.Deferred();
+                setTimeout(function() { result = 'first'; def.resolve(); }, 30);
+                return def.promise();
+            }
+        }, {
+            beforeRoute: function() {
+                result = 'second';
+            }
+        }, {
+            beforeRoute: function() {
+                var def = $.Deferred();
+                setTimeout(function() { result = 'third'; def.resolve(); }, 10);
+                return def.promise();
+            }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        this.testRoute.on('after:execute', function() {
+            expect(result).to.equal('third');
+            done();
+        });
+    });
 });
