@@ -67,7 +67,7 @@ For example, here's a route that loads some data from some Backbone Model before
 ```js
 var LoadSomeDataRoute = Backbone.Blazer.Route.extend({
   prepare: function(routeData) {
-    routData.someData = new SomeData();
+    routeData.someData = new SomeData();
     return routeData.someData.fetch();
   },
   execute: function(routeData) {
