@@ -18,6 +18,25 @@ var RouteThatErrors = Backbone.Blazer.Route.extend({
     }
 });
 
+var RouteWithFilter = Backbone.Blazer.Route.extend({
+    filters: [{
+        beforeRoute: function(routeData) {
+            console.log('RouteWithFilter beforeRoute', routeData);
+        },
+        afterRoute: function(routeData) {
+            console.log('RouteWithFilter afterRoute', routeData);
+        }
+    }],
+
+    prepare: function(routeData) {
+        console.log('RouteWithFilter prepare', routeData);
+    },
+
+    execute: function(routeData) {
+        console.log('RouteWithFilter execute', routeData);
+    }
+});
+
 var Router = Backbone.Blazer.Router.extend({
     routes: {
         'examples/basic/function': function(routeData) {
@@ -25,7 +44,8 @@ var Router = Backbone.Blazer.Router.extend({
         },
         'examples/basic/method': 'method',
         'examples/basic/routeObject': new Route(),
-        'examples/basic/routeObjectError': new RouteThatErrors()
+        'examples/basic/routeObjectError': new RouteThatErrors(),
+        'examples/basic/routeFilters': new RouteWithFilter()
     },
     method: function(routeData) {
         console.log('Method route matched', routeData);
