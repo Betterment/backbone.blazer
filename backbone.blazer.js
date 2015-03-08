@@ -110,7 +110,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         }, null);
 
         if (chain) {
-            chain.then(def.resolve, def.reject);
+            chain.then(def.resolve);
         } else {
             def.resolve();
         }
