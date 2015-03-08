@@ -1,3 +1,46 @@
+// the Backbone.Router internal way to extract named params from routes
+var NAMED_PARAM = /(\(\?)?:\w+/g;
+
+var RouterUtil = {
+    extractQueryParameters: function(queryString) {
+        var pairs;
+
+        if (!_.isString(queryString)) {
+            return {};
+        }
+
+        pairs = queryString.split('&');
+
+        return _.reduce(pairs, function(memo, pair) {
+            var kv = pair.split('='),
+                key = decodeURIComponent(kv[0]),
+                val = _.isUndefined(kv[1]) ? null : decodeURIComponent(kv[1]),
+                currentVal = memo[key];
+
+            //TODO: support objects
+            // e.g. foo[bar]=1&foo[baz]=2
+            if (_.isUndefined(currentVal)) {
+                memo[key] = val;
+            } else if (_.isArray(currentVal)) {
+                memo[key].push(val);
+            } else {
+                memo[key] = val;
+            }
+        }, {});
+    },
+
+    extractNamedRouteParameters: function(routeString, rawRouteParams) {
+        if (!_.isArray(rawRouteParams) || rawRouteParams.length < 1) {
+            return {};
+        }
+
+        var keys = routeString.match(NAMED_PARAM) || [],
+            vals = rawRouteParams.slice(0, keys.length);
+
+        return _.object(_.zip(keys, vals));
+    }
+};
+
 Backbone.Blazer = {};
 
 Backbone.Blazer.Route = function(options) {
@@ -19,18 +62,29 @@ _.extend(Backbone.Blazer.Route.prototype, Backbone.Events, {
 });
 
 Backbone.Blazer.Router = Backbone.Router.extend({
-    route: function(route, config) {
-        if (!_.isRegExp(route)) {
-            route = this._routeToRegExp(route);
+    route: function(originalRoute, handlerConfig) {
+        var routeRegex,
+            routeString = '' + originalRoute,
+            routeData = {};
+
+        if (!_.isRegExp(originalRoute)) {
+            routeRegex = this._routeToRegExp(originalRoute);
+            routeData.originalRoute = originalRoute;
+        } else {
+            routeRegex = originalRoute;
         }
 
-        var routeData = {
-            handler: config
-        };
+        routeData.router = this;
+        routeData.route = routeRegex;
+        routeData.handler = handlerConfig;
 
         var router = this;
-        Backbone.history.route(route, function(fragment) {
-            routeData.params = router._extractParameters(route, fragment);
+        Backbone.history.route(routeRegex, function(fragment) {
+            var rawRouteParams = router._extractParameters(routeRegex, fragment);
+            var queryString = rawRouteParams.pop();
+
+            routeData.query = RouterUtil.extractQueryParameters(queryString);
+            routeData.params = RouterUtil.extractNamedRouteParameters(routeString, rawRouteParams);
             router.handleRoute(routeData);
         });
         return this;
