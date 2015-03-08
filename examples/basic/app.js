@@ -14,7 +14,7 @@ var RouteThatErrors = Backbone.Blazer.Route.extend({
         return $.Deferred().reject('error message').promise();
     },
     error: function(routeData, error) {
-        console.log('RouteThatErrors route matched', routeData, error);
+        console.log('RouteThatErrors route error triggered', routeData, error);
     }
 });
 

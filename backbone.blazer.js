@@ -71,7 +71,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
             if (router.currentRoute !== route) {
                 return;
             }
-            var errorHandled = route.error.apply(route, args) === false;
+            var errorHandled = route.error.apply(route, args) === true;
             if (!errorHandled) {
                 router.trigger('error', args);
             }

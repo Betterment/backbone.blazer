@@ -95,7 +95,7 @@ The entries in the `routes` hash can contain any of the following:
 ### events
  - `before:execute`, with payload `[routeData]`. this is the first thing that happens when processing a route.
  - `after:execute`, with payload `[routeData]`. this is the last thing called when processing a route. **only** called if execute was actually called.
- 
+
 ### `#prepare(routeData)`
  - returns a promise (default value is a successfully resolved promise)
 
@@ -104,7 +104,7 @@ The entries in the `routes` hash can contain any of the following:
 
 ### `#error(routeData, argumentsFromRejectedPromise)`
  - called if the promise from `#prepare` resolves to failure
- - returning false will prevent the router from bubbling the error back up through itself to the application.
+ - returning `true` will prevent the router from bubbling the error back up through itself to the application.
 
 --
 
