@@ -49,7 +49,7 @@ describe('Backbone.Blazer.Router', function() {
         expect(this.testRoute.error).to.have.been.calledOnce;
     });
 
-    it('should run a single before and after filter', function() {
+    it('should run a single before and after filter attached to the router', function() {
         this.router.filters = [{
             beforeRoute: sinon.spy(),
             afterRoute: sinon.spy()
@@ -61,33 +61,45 @@ describe('Backbone.Blazer.Router', function() {
         expect(this.router.filters[0].afterRoute).to.have.been.calledOnce;
     });
 
-    it('should run multiple synchronous filters in order', function() {
-        var result = null;
-
-        this.router.filters = [{
-            beforeRoute: function() { result = 'first'; }
-        }, {
-            beforeRoute: function() { result = 'second'; }
+    it('should run filters attached to a route', function() {
+        this.testRoute.filters = [{
+            beforeRoute: sinon.spy(),
+            afterRoute: sinon.spy()
         }];
 
         this.router.navigate('route', { trigger: true });
 
-        expect(result).to.equal('second');
+        expect(this.testRoute.filters[0].beforeRoute).to.have.been.calledOnce;
+        expect(this.testRoute.filters[0].afterRoute).to.have.been.calledOnce;
+    });
+
+    it('should run multiple synchronous filters in order', function() {
+        var result = [];
+
+        this.router.filters = [{
+            beforeRoute: function() { result.push(1); }
+        }, {
+            beforeRoute: function() { result.push(2); }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(result).to.eql([1, 2]);
     });
 
     it('should run multiple asynchronous filters in order', function(done) {
-        var result = null;
+        var result = [];
 
         this.router.filters = [{
             beforeRoute: function() {
                 var def = $.Deferred();
-                setTimeout(function() { result = 'first'; def.resolve(); }, 30);
+                setTimeout(function() { result.push(1); def.resolve(); }, 30);
                 return def.promise();
             }
         }, {
             beforeRoute: function() {
                 var def = $.Deferred();
-                setTimeout(function() { result = 'second'; def.resolve(); }, 10);
+                setTimeout(function() { result.push(2); def.resolve(); }, 10);
                 return def.promise();
             }
         }];
@@ -95,37 +107,67 @@ describe('Backbone.Blazer.Router', function() {
         this.router.navigate('route', { trigger: true });
 
         this.testRoute.on('after:execute', function() {
-            expect(result).to.equal('second');
+            expect(result).to.eql([1, 2]);
             done();
         });
     });
 
     it('should run a mix of synchronous and asynchronous filters in order', function(done) {
-        var result = null;
+        var result = [];
 
         this.router.filters = [{
             beforeRoute: function() {
                 var def = $.Deferred();
-                setTimeout(function() { result = 'first'; def.resolve(); }, 30);
+                setTimeout(function() { result.push(1); def.resolve(); }, 30);
                 return def.promise();
             }
         }, {
             beforeRoute: function() {
-                result = 'second';
+                result.push(2);
             }
         }, {
             beforeRoute: function() {
                 var def = $.Deferred();
-                setTimeout(function() { result = 'third'; def.resolve(); }, 10);
+                setTimeout(function() { result.push(3); def.resolve(); }, 10);
                 return def.promise();
             }
         }];
 
-        this.router.navigate('route', { trigger: true });
-
         this.testRoute.on('after:execute', function() {
-            expect(result).to.equal('third');
+            expect(result).to.eql([1, 2, 3]);
             done();
         });
+
+        this.router.navigate('route', { trigger: true });
+    });
+
+    it('should run router filters and then route filters', function() {
+        var result = [];
+
+        this.router.filters = [{
+            beforeRoute: function() { result.push(1); }
+        }];
+
+        this.testRoute.filters = [{
+            beforeRoute: function() { result.push(2); }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(result).to.eql([1, 2]);
+    });
+
+    it('should not prepare or execute the route if the filters fail to resolve', function() {
+        this.sinon.spy(this.testRoute, 'prepare');
+        this.sinon.spy(this.testRoute, 'execute');
+
+        this.router.filters = [{
+            beforeRoute: function() { return $.Deferred().reject().promise(); }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.testRoute.prepare).to.not.have.been.called;
+        expect(this.testRoute.execute).to.not.have.been.called;
     });
 });
