@@ -79,12 +79,15 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         routeData.handler = handlerConfig;
 
         var router = this;
-        Backbone.history.route(routeRegex, function(fragment) {
+        Backbone.history.route(routeRegex, function(fragment, options) {
             var rawRouteParams = router._extractParameters(routeRegex, fragment);
             var queryString = rawRouteParams.pop();
 
             routeData.query = RouterUtil.extractQueryParameters(queryString);
             routeData.params = RouterUtil.extractNamedRouteParameters(routeString, rawRouteParams);
+            routeData.fragment = fragment;
+            routeData.options = options;
+
             router.handleRoute(routeData);
         });
         return this;
