@@ -60,7 +60,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         route.trigger('before:execute', routeData);
 
         this._runBeforeFilters(route, routeData).then(function() {
-            return route.prepare(routeData);
+            return $.when(route.prepare(routeData));
         }).then(function() {
             if (router.currentRoute !== route) {
                 return;

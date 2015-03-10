@@ -8,7 +8,7 @@ global.navigator = global.window.navigator = {
 global._ = require('underscore');
 global.$ = require('jquery');
 global.Backbone = require('backbone');
-Backbone.$ = global.$;
+global.Backbone.$ = global.$;
 global.Blazer = require('../backbone.blazer');
 
 global.Location = function(href) {
