@@ -1,3 +1,7 @@
+// ========================== Backbone.BaseRoute start ==========================
+// @include node_modules/backbone.base-router/src/backbone.base-router.js
+// =========================== Backbone.BaseRoute end ===========================
+
 Backbone.Blazer = {};
 
 Backbone.Blazer.Route = function(options) {
@@ -18,33 +22,14 @@ _.extend(Backbone.Blazer.Route.prototype, Backbone.Events, {
     error: function() {}
 });
 
-Backbone.Blazer.Router = Backbone.Router.extend({
-    route: function(route, config) {
-        if (!_.isRegExp(route)) {
-            route = this._routeToRegExp(route);
-        }
-
-        var routeData = {
-            handler: config
-        };
-
-        var router = this;
-        Backbone.history.route(route, function(fragment) {
-            routeData.params = router._extractParameters(route, fragment);
-            router.handleRoute(routeData);
-        });
-        return this;
-    },
-
-    handleRoute: function(routeData) {
-        var handler = routeData.handler;
+Backbone.Blazer.Router = Backbone.BaseRouter.extend({
+    onNavigate: function(routeData) {
+        var handler = routeData.linked;
 
         this.currentRoute = handler;
 
-        if (_.isString(handler)) {
-            if (_.isFunction(this[handler])) {
-                this[handler].apply(this, routeData.params);
-            }
+        if (_.isString(handler) && _.isFunction(this[handler])) {
+            this[handler].apply(this, routeData);
         } else if (handler instanceof Backbone.Blazer.Route) {
             this._handleBlazerRoute(handler, routeData);
         } else if (_.isFunction(handler)) {

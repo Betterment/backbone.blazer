@@ -9,7 +9,8 @@ global._ = require('underscore');
 global.$ = require('jquery');
 global.Backbone = require('backbone');
 Backbone.$ = global.$;
-global.Blazer = require('../backbone.blazer');
+require('backbone.base-router');
+require('../backbone.blazer');
 
 global.Location = function(href) {
     this.replace(href);
