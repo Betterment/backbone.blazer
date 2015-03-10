@@ -51,8 +51,8 @@ describe('Backbone.Blazer.Router', function() {
 
     it('should run a single before and after filter attached to the router', function() {
         this.router.filters = [{
-            beforeRoute: sinon.spy(),
-            afterRoute: sinon.spy()
+            beforeRoute: this.sinon.spy(),
+            afterRoute: this.sinon.spy()
         }];
 
         this.router.navigate('route', { trigger: true });
@@ -63,8 +63,8 @@ describe('Backbone.Blazer.Router', function() {
 
     it('should run filters attached to a route', function() {
         this.testRoute.filters = [{
-            beforeRoute: sinon.spy(),
-            afterRoute: sinon.spy()
+            beforeRoute: this.sinon.spy(),
+            afterRoute: this.sinon.spy()
         }];
 
         this.router.navigate('route', { trigger: true });
