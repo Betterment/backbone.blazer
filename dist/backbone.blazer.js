@@ -74,6 +74,7 @@
             var router = this;
     
             route.trigger('before:execute', routeData);
+            router.trigger('before:execute', routeData);
     
             this._runBeforeFilters(route, routeData).then(function() {
                 return $.when(route.prepare(routeData));
@@ -84,6 +85,7 @@
     
                 route.execute(routeData);
                 route.trigger('after:execute', routeData);
+                router.trigger('after:execute', routeData);
     
                 router._runAfterFilters(route, routeData);
             }).fail(function() {

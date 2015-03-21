@@ -29,12 +29,21 @@ describe('Backbone.Blazer.Router', function() {
         this.sinon.spy(this.testRoute, 'execute');
         this.sinon.spy(this.testRoute, 'error');
 
+        var routerBeforeExecute = this.sinon.spy();
+        this.router.on('before:execute', routerBeforeExecute);
+
+        var routerAfterExecute = this.sinon.spy();
+        this.router.on('after:execute', routerAfterExecute);
+
         this.router.navigate('route', { trigger: true });
 
         expect(this.router.handleRoute).to.have.been.calledOnce;
         expect(this.testRoute.prepare).to.have.been.calledOnce;
         expect(this.testRoute.execute).to.have.been.calledOnce;
         expect(this.testRoute.error).to.not.have.been.called;
+
+        expect(routerBeforeExecute).to.have.been.calledOnce;
+        expect(routerAfterExecute).to.have.been.calledOnce;
     });
 
     it('should process an error correctly', function() {
