@@ -1,7 +1,7 @@
 {
   "name": "backbone.blazer",
   "main": "backbone.blazer.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "authors": [
     "Sam Moore <sam@betterment.com>"
   ],
