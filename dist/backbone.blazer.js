@@ -75,23 +75,63 @@
     
             route.trigger('before:execute', routeData);
     
-            $.when(route.prepare(routeData)).then(function() {
+            this._runBeforeFilters(route, routeData).then(function() {
+                return $.when(route.prepare(routeData));
+            }).then(function() {
                 if (router.currentRoute !== route) {
                     return;
                 }
+    
                 route.execute(routeData);
                 route.trigger('after:execute', routeData);
+    
+                router._runAfterFilters(route, routeData);
             }).fail(function() {
-                var args = Array.prototype.slice.call(arguments);
-                args.unshift(routeData);
                 if (router.currentRoute !== route) {
                     return;
                 }
-                var errorHandled = route.error.apply(route, args) === false;
+    
+                var args = Array.prototype.slice.call(arguments);
+                args.unshift(routeData);
+    
+                var errorHandled = route.error.apply(route, args) === true;
+    
                 if (!errorHandled) {
                     router.trigger('error', args);
                 }
             });
+        },
+    
+        _runBeforeFilters: function(route, routeData) {
+            return this._runFilters('beforeRoute', route, routeData);
+        },
+    
+        _runAfterFilters: function(route, routeData) {
+            return this._runFilters('afterRoute', route, routeData);
+        },
+    
+        _runFilters: function(which, route, routeData) {
+            var filters = (this.filters || []).concat(route.filters || []),
+                stageFilters = _.compact(_.pluck(filters, which)),
+                def = $.Deferred();
+    
+            var chain = _.reduce(stageFilters, function(previous, filter) {
+                if (!previous) {
+                    return $.when(filter(routeData));
+                }
+    
+                return previous.then(function() {
+                    return filter(routeData);
+                });
+            }, null);
+    
+            if (chain) {
+                chain.then(def.resolve);
+            } else {
+                def.resolve();
+            }
+    
+            return def.promise();
         }
     });
     
