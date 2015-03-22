@@ -26,12 +26,7 @@ learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7i
 In order to build a modularized routing system, we've extended and overriden a few parts of the core `Backbone.Router`. This library attempts to be a **mostly** drop-in replacement for the normal Backbone router. However, we have removed a few things.
 
 ### what's in the box?
-#### removed
-We've removed the triggering of events on the router when processing a route. These were never useful to us, and so we've gotten rid of them.
-
-#### added
 `Backbone.Blazer.Router` still supports the usual way of routing in a Backbone application: mapping a regexp to a callback. However, we've gone ahead and added a new way of configuring your routes: `Backbone.Blazer.Route`.
-
 
 # Router Configuration
 Blazer's router supports all the familiar configuration of `Backbone.Router`
@@ -82,6 +77,8 @@ The Blazer router expects the `prepare` method to return a promise. If the promi
 
 ## `Backbone.Blazer.Router`
 ### events
+ - `before:execute`, with payload `[routeData]`. this is the first thing that happens when processing a route.
+ - `after:execute`, with payload `[routeData]`. this is the last thing called when processing a route. **only** called if execute was actually called.
  - `error`, with payload `[routeData, argsFromRejectedPromise]`
 
 The router accepts the same parameters as the normal [`Backbone.Router`](http://backbonejs.org/#Router).
