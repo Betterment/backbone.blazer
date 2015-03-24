@@ -15,7 +15,12 @@ _.extend(Backbone.Blazer.Route.prototype, Backbone.Events, {
     },
     prepare: function() {},
     execute: function() {},
-    error: function() {}
+    error: function() {},
+    redirect: function(fragment) {
+        return {
+            redirectFragment: fragment
+        };
+    }
 });
 
 Backbone.Blazer.Router = Backbone.Router.extend({
@@ -60,7 +65,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         route.trigger('before:execute', routeData);
         router.trigger('before:execute', routeData);
 
-        this._runBeforeFilters(route, routeData).then(function() {
+        this._runBeforeFilters(router, route, routeData).then(function() {
             return $.when(route.prepare(routeData));
         }).then(function() {
             if (router.currentRoute !== route) {
@@ -71,7 +76,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
             route.trigger('after:execute', routeData);
             router.trigger('after:execute', routeData);
 
-            router._runAfterFilters(route, routeData);
+            router._runAfterFilters(router, route, routeData);
         }).fail(function() {
             if (router.currentRoute !== route) {
                 return;
@@ -88,28 +93,30 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         });
     },
 
-    _runBeforeFilters: function(route, routeData) {
-        return this._runFilters('beforeRoute', route, routeData);
+    _runBeforeFilters: function(router, route, routeData) {
+        return this._runFilters('beforeRoute', router, route, routeData);
     },
 
-    _runAfterFilters: function(route, routeData) {
-        return this._runFilters('afterRoute', route, routeData);
+    _runAfterFilters: function(router, route, routeData) {
+        return this._runFilters('afterRoute', router, route, routeData);
     },
 
-    _runFilters: function(which, route, routeData) {
+    _runFilters: function(which, router, route, routeData) {
         var filters = (this.filters || []).concat(route.filters || []),
             stageFilters = _.compact(_.pluck(filters, which)),
             def = $.Deferred();
 
         var chain = _.reduce(stageFilters, function(previous, filter) {
+            
             if (!previous) {
-                return $.when(filter(routeData));
+                return this._runFilter(filter, router, route, routeData);
             }
 
             return previous.then(function() {
-                return filter(routeData);
-            });
-        }, null);
+                return this._runFilter(filter, router, route, routeData);
+            }.bind(this));
+
+        }.bind(this), null);
 
         if (chain) {
             chain.then(def.resolve);
@@ -118,5 +125,16 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         }
 
         return def.promise();
+    },
+
+    _runFilter: function(filter, router, route, routeData) {
+        var result = filter.call(route, routeData);
+
+        if (result && result.redirectFragment) {
+            router.navigate(result.redirectFragment, { trigger: true });
+            return $.Deferred().reject().promise();
+        }
+
+        return $.when(result);
     }
 });

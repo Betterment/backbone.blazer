@@ -169,6 +169,7 @@ describe('Backbone.Blazer.Router', function() {
     it('should not prepare or execute the route if the filters fail to resolve', function() {
         this.sinon.spy(this.testRoute, 'prepare');
         this.sinon.spy(this.testRoute, 'execute');
+        this.sinon.spy(this.testRoute, 'error');
 
         this.router.filters = [{
             beforeRoute: function() { return $.Deferred().reject().promise(); }
@@ -178,5 +179,68 @@ describe('Backbone.Blazer.Router', function() {
 
         expect(this.testRoute.prepare).to.not.have.been.called;
         expect(this.testRoute.execute).to.not.have.been.called;
+        expect(this.testRoute.error).to.not.have.been.called;
+    });
+
+    it('should redirect to a different route if a filter returns a redirect', function() {
+        this.sinon.spy(this.testRoute, 'prepare');
+        this.sinon.spy(this.testRoute, 'execute');
+        this.sinon.spy(this.testRoute, 'error');
+
+        this.redirectRoute = new (Backbone.Blazer.Route.extend({}))();
+        this.router.route('redirect', this.redirectRoute);
+
+        this.sinon.spy(this.redirectRoute, 'prepare');
+        this.sinon.spy(this.redirectRoute, 'execute');
+        this.sinon.spy(this.redirectRoute, 'error');
+
+        this.testRoute.filters = [{
+            beforeRoute: function() { return this.redirect('redirect'); }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.testRoute.prepare).to.not.have.been.called;
+        expect(this.testRoute.execute).to.not.have.been.called;
+        expect(this.testRoute.error).to.not.have.been.called;
+
+        expect(this.redirectRoute.prepare).to.have.been.called;
+        expect(this.redirectRoute.execute).to.have.been.called;
+        expect(this.redirectRoute.error).not.to.have.been.called;
+    });
+
+    it('should filters in order until a redirect happens', function() {
+        var result = [];
+
+        this.sinon.spy(this.testRoute, 'prepare');
+        this.sinon.spy(this.testRoute, 'execute');
+        this.sinon.spy(this.testRoute, 'error');
+
+        this.redirectRoute = new (Backbone.Blazer.Route.extend({}))();
+        this.router.route('redirect', this.redirectRoute);
+
+        this.sinon.spy(this.redirectRoute, 'prepare');
+        this.sinon.spy(this.redirectRoute, 'execute');
+        this.sinon.spy(this.redirectRoute, 'error');
+
+        this.testRoute.filters = [{
+            beforeRoute: function() { return result.push(1); }
+        }, {
+            beforeRoute: function() { return this.redirect('redirect'); }
+        }, {
+            beforeRoute: function() { return result.push(2); }
+        }];
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.testRoute.prepare).to.not.have.been.called;
+        expect(this.testRoute.execute).to.not.have.been.called;
+        expect(this.testRoute.error).to.not.have.been.called;
+
+        expect(this.redirectRoute.prepare).to.have.been.called;
+        expect(this.redirectRoute.execute).to.have.been.called;
+        expect(this.redirectRoute.error).not.to.have.been.called;
+
+        expect(result).to.eql([1]);
     });
 });
