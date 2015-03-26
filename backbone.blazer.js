@@ -66,18 +66,18 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         router.trigger('before:execute', routeData);
 
         this._runBeforeFilters(router, route, routeData).then(function() {
-            return this._runHandler(route.prepare, router, route, routeData);
-        }.bind(this)).then(function() {
+            return router._runHandler(route.prepare, router, route, routeData);
+        }).then(function() {
             if (router.currentRoute !== route) {
                 return;
             }
 
-            this._runHandler(route.execute, router, route, routeData);
+            router._runHandler(route.execute, router, route, routeData);
             route.trigger('after:execute', routeData);
             router.trigger('after:execute', routeData);
 
             router._runAfterFilters(router, route, routeData);
-        }.bind(this)).fail(function() {
+        }).fail(function() {
             if (router.currentRoute !== route) {
                 return;
             }
@@ -86,8 +86,8 @@ Backbone.Blazer.Router = Backbone.Router.extend({
             args.unshift(routeData);
 
             var errorHandled;
-            this._runHandler(function(routeData) {
-                var result = this.error.apply(this, args);
+            router._runHandler(function(routeData) {
+                var result = route.error.apply(route, args);
                 errorHandled = result === true;
                 return result;
             }, router, route, routeData);
@@ -95,7 +95,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
             if (!errorHandled) {
                 router.trigger('error', args);
             }
-        }.bind(this));
+        });
     },
 
     _runBeforeFilters: function(router, route, routeData) {
@@ -114,14 +114,14 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         var chain = _.reduce(stageFilters, function(previous, filter) {
             
             if (!previous) {
-                return this._runHandler(filter, router, route, routeData);
+                return router._runHandler(filter, router, route, routeData);
             }
 
             return previous.then(function() {
-                return this._runHandler(filter, router, route, routeData);
-            }.bind(this));
+                return router._runHandler(filter, router, route, routeData);
+            });
 
-        }.bind(this), null);
+        }, null);
 
         if (chain) {
             chain.then(def.resolve);
