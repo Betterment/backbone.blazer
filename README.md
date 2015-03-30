@@ -73,6 +73,66 @@ var LoadSomeDataRoute = Backbone.Blazer.Route.extend({
 
 The Blazer router expects the `prepare` method to return a promise. If the promise is resolved as a success, then the `execute` method is called; otherwise, the route's `error` method is called (if provided).
 
+# Filters
+
+## Configuration
+Both `Router` and `Route` objects can define filters that run before and after a route is invoked.
+Filters are specified as an array of objects, where each object has a `beforeRoute` and/or `afterRoute` functions.
+```js
+var FilteredRoute = Backbone.Blazer.Route.extend({
+  filters: [{
+    beforeRoute: function() {
+      // I run before my prepare() method is called
+    },
+    
+    afterRoute: function() {
+      // I run after my execute() method is called
+    }
+  }]
+});
+
+var Router = Backbone.Blazer.Router.extend({
+  routes: {
+    'route1': new FilteredRoute(),
+    'route2': new OtherRoute()
+  },
+
+  filters: [{
+    beforeRoute: function() {
+      // I run before prepare() is called on all routes
+    },
+    
+    afterRoute: function() {
+      // I run after execute() is called on all routes
+    }
+  }]
+});
+
+```
+
+## Ordering
+Filters will run in the order they are sepcified in the `filters` array. A filter that needs to do some asynchronous work can return a promise and the next filter in the chain will not be run until that promise is resolved. Because of this, it is safe to mix filters that do synchronous work with filters that do asynchronous work.
+
+Filters on a `Router` object will be run for all `Route` objects on that router. When invoking a specific route, the router's filters will all run before filters on the route in question are run.
+
+## Halting Execution
+If a filter returns a promise and that promise is rejected or simply never resolves, the filter chain will stop executing and subsequent filters in the chain will not be invoked. In the case of before filters the `prepare()` function will never be invoked.
+
+# Redirecting
+You can stop redirect to another route at any point during route invokation. Doing this will stop execution of the current route. For instance, if a `beforeRoute` filter redirects then `prepare` and `execute` will not be invoked for the current route. Similarly, if `prepare` redirects then `execute` will not be invoked for the current route.
+
+```js
+var Route = Backbone.Blazer.Route.extend({
+  filters: [{
+    beforeRoute: function() {
+      if (somethingBadHappened()) {
+        return this.redirect('another_route');
+      }
+    }
+  }]
+});
+```
+
 # API
 
 ## `Backbone.Blazer.Router`
@@ -102,6 +162,9 @@ The entries in the `routes` hash can contain any of the following:
 ### `#error(routeData, argumentsFromRejectedPromise)`
  - called if the promise from `#prepare` resolves to failure
  - returning `true` will prevent the router from bubbling the error back up through itself to the application.
+
+### `#redirect(fragment)`
+ - return this from within any `beforeRoute`, `afterRoute`, `prepare`, `execute` or `error` function and execution for this route will stop immediately and a new route corresponding to the provided fragment will be invoked.
 
 --
 
