@@ -15,7 +15,12 @@ _.extend(Backbone.Blazer.Route.prototype, Backbone.Events, {
     },
     prepare: function() {},
     execute: function() {},
-    error: function() {}
+    error: function() {},
+    redirect: function(fragment) {
+        return {
+            redirectFragment: fragment
+        };
+    }
 });
 
 Backbone.Blazer.Router = Backbone.Router.extend({
@@ -60,18 +65,18 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         route.trigger('before:execute', routeData);
         router.trigger('before:execute', routeData);
 
-        this._runBeforeFilters(route, routeData).then(function() {
-            return $.when(route.prepare(routeData));
+        this._runBeforeFilters(router, route, routeData).then(function() {
+            return router._runHandler(route.prepare, router, route, routeData);
         }).then(function() {
             if (router.currentRoute !== route) {
                 return;
             }
 
-            route.execute(routeData);
+            router._runHandler(route.execute, router, route, routeData);
             route.trigger('after:execute', routeData);
             router.trigger('after:execute', routeData);
 
-            router._runAfterFilters(route, routeData);
+            router._runAfterFilters(router, route, routeData);
         }).fail(function() {
             if (router.currentRoute !== route) {
                 return;
@@ -80,7 +85,12 @@ Backbone.Blazer.Router = Backbone.Router.extend({
             var args = Array.prototype.slice.call(arguments);
             args.unshift(routeData);
 
-            var errorHandled = route.error.apply(route, args) === true;
+            var errorHandled;
+            router._runHandler(function(routeData) {
+                var result = route.error.apply(route, args);
+                errorHandled = result === true;
+                return result;
+            }, router, route, routeData);
 
             if (!errorHandled) {
                 router.trigger('error', args);
@@ -88,27 +98,29 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         });
     },
 
-    _runBeforeFilters: function(route, routeData) {
-        return this._runFilters('beforeRoute', route, routeData);
+    _runBeforeFilters: function(router, route, routeData) {
+        return this._runFilters('beforeRoute', router, route, routeData);
     },
 
-    _runAfterFilters: function(route, routeData) {
-        return this._runFilters('afterRoute', route, routeData);
+    _runAfterFilters: function(router, route, routeData) {
+        return this._runFilters('afterRoute', router, route, routeData);
     },
 
-    _runFilters: function(which, route, routeData) {
+    _runFilters: function(which, router, route, routeData) {
         var filters = (this.filters || []).concat(route.filters || []),
             stageFilters = _.compact(_.pluck(filters, which)),
             def = $.Deferred();
 
         var chain = _.reduce(stageFilters, function(previous, filter) {
+            
             if (!previous) {
-                return $.when(filter(routeData));
+                return router._runHandler(filter, router, route, routeData);
             }
 
             return previous.then(function() {
-                return filter(routeData);
+                return router._runHandler(filter, router, route, routeData);
             });
+
         }, null);
 
         if (chain) {
@@ -118,5 +130,16 @@ Backbone.Blazer.Router = Backbone.Router.extend({
         }
 
         return def.promise();
+    },
+
+    _runHandler: function(handler, router, route, routeData) {
+        var result = handler.call(route, routeData);
+
+        if (result && result.redirectFragment) {
+            router.navigate(result.redirectFragment, { trigger: true });
+            return $.Deferred().reject().promise();
+        }
+
+        return $.when(result);
     }
 });
