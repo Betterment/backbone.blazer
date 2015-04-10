@@ -37,6 +37,17 @@ var RouteWithFilter = Backbone.Blazer.Route.extend({
     }
 });
 
+var RouteWithRedirect = Backbone.Blazer.Route.extend({
+    prepare: function(routeData) {
+        console.log('RouteWithRedirect prepare', routeData);
+        return this.redirect('examples/basic/routeObject');
+    },
+
+    execute: function(routeData) {
+        console.log('This never happens!');
+    }
+});
+
 var Router = Backbone.Blazer.Router.extend({
     routes: {
         'examples/basic/function': function(routeData) {
@@ -45,7 +56,8 @@ var Router = Backbone.Blazer.Router.extend({
         'examples/basic/method': 'method',
         'examples/basic/routeObject': new Route(),
         'examples/basic/routeObjectError': new RouteThatErrors(),
-        'examples/basic/routeFilters': new RouteWithFilter()
+        'examples/basic/routeFilters': new RouteWithFilter(),
+        'examples/basic/redirect': new RouteWithRedirect()
     },
     method: function(routeData) {
         console.log('Method route matched', routeData);
