@@ -3,7 +3,7 @@ describe('Backbone.Blazer.Router', function() {
     var TestRoute = Backbone.Blazer.Route.extend({
         execute: function() {}
     });
-    
+
     var RedirectRoute = Backbone.Blazer.Route.extend({
         execute: function() {}
     });
@@ -271,6 +271,58 @@ describe('Backbone.Blazer.Router', function() {
 
         this.router.navigate('route', { trigger: true });
 
+        expect(this.redirectRoute.execute).to.have.been.called;
+    });
+
+    it('should not trigger an error when redirecting from prepare', function() {
+        this.sinon.stub(this.testRoute, 'prepare', function() { return this.redirect('redirect') });
+        this.sinon.spy(this.testRoute, 'error');
+        this.sinon.spy(this.redirectRoute, 'execute');
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.testRoute.error).to.not.have.been.called;
+        expect(this.redirectRoute.execute).to.have.been.called;
+    });
+
+    it('should not trigger an error when redirecting from a filter', function() {
+        this.testRoute.filters = [{
+            beforeRoute: function() { return this.redirect('redirect') }
+        }];
+        this.sinon.spy(this.testRoute, 'error');
+        this.sinon.spy(this.redirectRoute, 'execute');
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(this.testRoute.error).to.not.have.been.called;
+        expect(this.redirectRoute.execute).to.have.been.called;
+    });
+
+    it('should not trigger the error event when redirecting from prepare', function() {
+        this.sinon.stub(this.testRoute, 'prepare', function() { return this.redirect('redirect') });
+        this.sinon.spy(this.redirectRoute, 'execute');
+
+        var errorSpy = this.sinon.spy();
+        this.testRoute.on('error', errorSpy);
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(errorSpy).to.not.have.been.called;
+        expect(this.redirectRoute.execute).to.have.been.called;
+    });
+
+    it('should not trigger the error event when redirecting from filter', function() {
+        this.testRoute.filters = [{
+            beforeRoute: function() { return this.redirect('redirect') }
+        }];
+        this.sinon.spy(this.redirectRoute, 'execute');
+
+        var errorSpy = this.sinon.spy();
+        this.testRoute.on('error', errorSpy);
+
+        this.router.navigate('route', { trigger: true });
+
+        expect(errorSpy).to.not.have.been.called;
         expect(this.redirectRoute.execute).to.have.been.called;
     });
 
