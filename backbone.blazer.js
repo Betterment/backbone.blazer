@@ -17,9 +17,9 @@ _.extend(Backbone.Blazer.Route.prototype, Backbone.Events, {
     execute: function() {},
     error: function() {},
     redirect: function(fragment) {
-        return {
+        return $.Deferred().reject({
             redirectFragment: fragment
-        };
+        }).promise();
     }
 });
 
@@ -112,7 +112,7 @@ Backbone.Blazer.Router = Backbone.Router.extend({
             def = $.Deferred();
 
         var chain = _.reduce(stageFilters, function(previous, filter) {
-            
+
             if (!previous) {
                 return router._runHandler(filter, router, route, routeData);
             }
@@ -133,13 +133,10 @@ Backbone.Blazer.Router = Backbone.Router.extend({
     },
 
     _runHandler: function(handler, router, route, routeData) {
-        var result = handler.call(route, routeData);
-
-        if (result && result.redirectFragment) {
-            router.navigate(result.redirectFragment, { trigger: true });
-            return $.Deferred().reject().promise();
-        }
-
-        return $.when(result);
+        return $.when(handler.call(route, routeData)).fail(function(result) {
+            if (result && result.redirectFragment) {
+                router.navigate(result.redirectFragment, { trigger: true });
+            }
+        });
     }
 });
