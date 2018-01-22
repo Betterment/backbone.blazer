@@ -1,4 +1,11 @@
 # backbone.blazer
+
+## Unsupported
+
+We no longer use blazer and no longer maintain it, but are leaving the source code up for reference. Please feel free to fork the repo if it still has value to your team.
+
+---
+
 A better router for Backbone and Marionette applications
 
 <a title='Build Status' href="https://travis-ci.org/Betterment/backbone.blazer">
