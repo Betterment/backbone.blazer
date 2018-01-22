@@ -11,9 +11,6 @@ A better router for Backbone and Marionette applications
 <a title='Build Status' href="https://travis-ci.org/Betterment/backbone.blazer">
   <img src='https://secure.travis-ci.org/Betterment/backbone.blazer.svg?branch=master' />
 </a>
-<a href='https://gitter.im/Betterment/backbone.blazer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge'>
-  <img src='https://badges.gitter.im/Join%20Chat.svg' alt='Gitter Chat' />
-</a>
 
 learn more [here](https://docs.google.com/presentation/d/1MNgrFUsjFd-LUwukuc9I7iRr0jmspmSr97gyIO3PH2k/edit?usp=sharing) (presentation) and [here](http://youtu.be/F32QhaHFn1k) (video)
 
